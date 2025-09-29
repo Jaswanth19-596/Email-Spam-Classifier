@@ -1,0 +1,48 @@
+stages:
+  data_ingestion_stage:
+    cmd: python email_spam_classification/data_ingestion.py
+    deps:
+      - data/raw/emails.csv
+      - email_spam_classification/data_ingestion.py
+    outs:
+      - data/interim/data.csv
+  data_cleaning_stage:
+    cmd: python email_spam_classification/data_cleaning.py
+    deps:
+      - data/interim/data.csv
+      - email_spam_classification/data_cleaning.py
+    outs:
+      - data/interim/X_test.csv
+      - data/interim/X_train.csv
+      - data/interim/y_test.csv
+      - data/interim/y_train.csv
+  feature_engineering_stage:
+    cmd: python email_spam_classification/feature_engineering.py
+    deps:
+      - data/interim/X_test.csv
+      - data/interim/X_train.csv
+      - data/interim/y_test.csv
+      - data/interim/y_train.csv
+      - email_spam_classification/feature_engineering.py
+    outs:
+      - data/processed/X_test.csv
+      - data/processed/X_train.csv
+      - data/processed/y_test.csv
+      - data/processed/y_train.csv
+  model_building_stage:
+    cmd: python email_spam_classification/model_building.py
+    deps:
+      - data/processed/X_train.csv
+      - data/processed/y_train.csv
+      - email_spam_classification/model_building.py
+    outs:
+      - model.pkl
+  model_evaluation_stage:
+    cmd: python email_spam_classification/model_evaluation.py
+    deps:
+      - data/processed/X_test.csv
+      - data/processed/y_test.csv
+      - model.pkl
+      - email_spam_classification/model_evaluation.py
+    metrics:
+      - metrics.json
