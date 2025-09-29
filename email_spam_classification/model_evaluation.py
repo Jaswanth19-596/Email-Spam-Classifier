@@ -5,7 +5,7 @@ import json
 from sklearn.metrics import accuracy_score,precision_score, recall_score, roc_auc_score
 import os
 
-model = pickle.load(open('model.pkl', 'rb'))
+model = pickle.load(open('models/model.pkl', 'rb'))
 
 input_dir = os.path.join("data", "processed")
 

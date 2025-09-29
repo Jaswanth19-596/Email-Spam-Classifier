@@ -6,15 +6,14 @@ from nltk.corpus import stopwords
 import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
+import yaml
 
 
 nlp = spacy.load('en_core_web_sm')
-nltk.download('stopwords')
+# nltk.download('stopwords')
 
 
 input_path = os.path.join("data", "interim", "data.csv")
-
-
 
 df = pd.read_csv(input_path)
 
@@ -96,7 +95,16 @@ df = df[df['text'] != '']
 X = df.drop(columns = 'class')
 y = df['class']
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=32)
+
+
+with open('params.yaml', 'r') as f:
+  params = yaml.safe_load(f)
+
+test_size = params['data_cleaning']['test_size']
+
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, stratify=y, random_state=32)
 
 output_dir = os.path.join("data", "interim")
 X_train.to_csv(os.path.join(output_dir, "X_train.csv"), index=False, header=True)

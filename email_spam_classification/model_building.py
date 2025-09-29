@@ -1,5 +1,4 @@
-from sklearn.naive_bayes import GaussianNB,MultinomialNB,BernoulliNB
-from sklearn.metrics import accuracy_score,confusion_matrix,precision_score, recall_score
+from sklearn.naive_bayes import GaussianNB
 import os
 import pandas as pd
 import pickle
@@ -15,5 +14,5 @@ y_train = y_train.values.ravel()
 gnb = GaussianNB()
 gnb.fit(X_train,y_train)
 
-pickle.dump(gnb, open('model.pkl', 'wb'))
+pickle.dump(gnb, open('models/model.pkl', 'wb'))
 

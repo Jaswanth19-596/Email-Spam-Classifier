@@ -191,3 +191,5 @@ cython_debug/
 .pypirc
 /model.pkl
 /metrics.json
+
+venvemailspam
