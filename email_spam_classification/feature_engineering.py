@@ -12,7 +12,7 @@ y_test = pd.read_csv(os.path.join(input_dir, "y_test.csv"))
 
 
 
-cv = CountVectorizer(ngram_range=(1,2), max_features=800)
+cv = CountVectorizer(ngram_range=(1,2), max_features=1000)
 
 X_train = pd.DataFrame(cv.fit_transform(X_train['text']).toarray())
 X_test = pd.DataFrame(cv.transform(X_test['text']).toarray())
