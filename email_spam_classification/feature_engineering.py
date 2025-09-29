@@ -1,4 +1,4 @@
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 import os
 import pandas as pd
 import yaml
@@ -37,7 +37,7 @@ def main():
     ngram_range, max_features = get_params_yaml('params.yaml')
 
     # Perform Text Vectorization
-    cv = CountVectorizer(ngram_range=ngram_range, max_features=max_features)
+    cv = TfidfVectorizer(ngram_range=ngram_range, max_features=max_features)
 
     X_train = pd.DataFrame(cv.fit_transform(X_train['text']).toarray())
     X_test = pd.DataFrame(cv.transform(X_test['text']).toarray())
