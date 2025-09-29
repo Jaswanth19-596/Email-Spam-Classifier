@@ -8,18 +8,19 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import yaml
 
-
 nlp = spacy.load('en_core_web_sm')
-# nltk.download('stopwords')
+stop_words = set(stopwords.words('english'))
+nlp_model = spacy.load('en_core_web_sm')
 
 
-input_path = os.path.join("data", "interim", "data.csv")
-
-df = pd.read_csv(input_path)
+def load_data(input_path):
+  df = pd.read_csv(input_path)
+  return df
 
 
 def expand_contractions(text):
   return contractions.fix(text)
+
 
 # Tokenization
 def spacy_tokenize(text):
@@ -39,9 +40,9 @@ def remove_special_chars_regex(text):
     return temp
 
 
-stop_words = set(stopwords.words('english'))
 
 def remove_stopwords(words):
+
   temp = []
   for word in words:
     if word not in stop_words:
@@ -50,8 +51,7 @@ def remove_stopwords(words):
   return temp
 
 
-#### Using Spacy's Lemmatization to lemmatize words.
-nlp_model = spacy.load('en_core_web_sm')
+
 
 def lemmatize(words):
   temp = []
@@ -61,53 +61,76 @@ def lemmatize(words):
   return temp
 
 
-# After good observation, Spacy done a good job. Removing NLTK
 
-# Transforming text to lower case.
-df['text'] = df['text'].str.lower()
+def clean_data(df):
+   # Transforming text to lower case.
+  df['text'] = df['text'].str.lower()
 
-# Expand the Contractions
-df['text'] = df['text'].apply(expand_contractions)
+  # Expand the Contractions
+  df['text'] = df['text'].apply(expand_contractions)
 
-# Tokenization
-df['text'] = df['text'].apply(spacy_tokenize)
+  # Tokenization
+  df['text'] = df['text'].apply(spacy_tokenize)
 
-# Remove the special Characters
-df['text'] = df['text'].apply(remove_special_chars_regex)
+  # Remove the special Characters
+  df['text'] = df['text'].apply(remove_special_chars_regex)
 
-# Remove Stopwords
-df['text'] = df['text'].apply(remove_stopwords)
+  # Remove Stopwords
+  df['text'] = df['text'].apply(remove_stopwords)
 
-# Apply lemmatization
-df['text'] = df['text'].apply(lemmatize)
+  # Apply lemmatization
+  df['text'] = df['text'].apply(lemmatize)
 
-# Rejoining the words to form a sentence
-df['text'] =  df['text'].str.join(' ').str.strip()
+  # Rejoining the words to form a sentence
+  df['text'] =  df['text'].str.join(' ').str.strip()
 
-# Removing null values and duplicates
-df = df.drop_duplicates()
+  # Removing null values and duplicates
+  df = df.drop_duplicates()
 
-df = df.dropna(subset=['text'])
+  df = df.dropna(subset=['text'])
 
-df = df[df['text'] != '']
+  df = df[df['text'] != '']
+
+  return df
+
+# Get the params from the YAML file.
+def get_params_yaml(file_path):
+
+  with open(file_path, 'r') as f:
+    params = yaml.safe_load(f)
+
+  test_size = params['data_cleaning']['test_size']
+
+  return test_size
 
 
-X = df.drop(columns = 'class')
-y = df['class']
+def save(df, file_path):
+  df.to_csv(file_path, index=False, header=True)
 
 
+def main():
+  # Create the input path and output directory
+  input_path = os.path.join("data", "interim", "data.csv")
+  output_dir = os.path.join("data", "interim")
 
-with open('params.yaml', 'r') as f:
-  params = yaml.safe_load(f)
+  # Load the data
+  df = load_data(input_path)
 
-test_size = params['data_cleaning']['test_size']
+  # clean the data
+  df = clean_data(df)
 
+  # Split the data into training and testing data
+  X = df.drop(columns = 'class')
+  y = df['class']
 
+  test_size = get_params_yaml('params.yaml')
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, stratify=y, random_state=32)
+  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, stratify=y, random_state=32)
 
-output_dir = os.path.join("data", "interim")
-X_train.to_csv(os.path.join(output_dir, "X_train.csv"), index=False, header=True)
-X_test.to_csv(os.path.join(output_dir, "X_test.csv"), index=False, header=True)
-y_train.to_csv(os.path.join(output_dir, "y_train.csv"), index=False, header=True)
-y_test.to_csv(os.path.join(output_dir, "y_test.csv"), index=False, header=True)
+  # Save the data
+  save(X_train, os.path.join(output_dir, 'X_train.csv'))
+  save(X_test, os.path.join(output_dir, 'X_test.csv'))
+  save(y_train, os.path.join(output_dir, 'y_train.csv'))
+  save(y_test, os.path.join(output_dir, 'y_test.csv'))
+
+main()

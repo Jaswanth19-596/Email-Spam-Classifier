@@ -5,24 +5,48 @@ import json
 from sklearn.metrics import accuracy_score,precision_score, recall_score, roc_auc_score
 import os
 
-model = pickle.load(open('models/model.pkl', 'rb'))
+def load_model(file_path):
+    model = pickle.load(open(file_path, 'rb'))
+    return model
+    
+def load_data(path):
+    df = pd.read_csv(path)
+    return df
 
-input_dir = os.path.join("data", "processed")
+def save(metrics_dict, path):
+    with open(path, 'w') as file:
+        json.dump(metrics_dict, file, indent = 4)
 
-X_test = pd.read_csv(os.path.join(input_dir, 'X_test.csv'))
-y_test = pd.read_csv(os.path.join(input_dir, 'y_test.csv'))
 
-y_pred = model.predict(X_test)
+def main():
 
-accuracy = accuracy_score(y_test, y_pred)
-precision = precision_score(y_test, y_pred)
-recall = recall_score(y_test, y_pred)
+    # Load the model
+    model = load_model('models/model.pkl')
 
-metrics_dict={
-    'accuracy':accuracy,
-    'precision':precision,
-    'recall':recall,
-}
+    # Define input directory
+    input_dir = os.path.join("data", "processed")
 
-with open('metrics.json', 'w') as file:
-    json.dump(metrics_dict, file, indent = 4)
+    # Load the datasets
+    X_test = load_data(os.path.join(input_dir, 'X_test.csv'))
+    y_test = load_data(os.path.join(input_dir, 'y_test.csv'))
+
+    # Find predictions
+    y_pred = model.predict(X_test)
+
+    # Calculate metrics
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+
+    # Create the dictionary
+    metrics_dict={
+        'accuracy':accuracy,
+        'precision':precision,
+        'recall':recall,
+    }
+
+    # Save the metrics
+    save(metrics_dict, 'metrics.json')
+
+
+main()

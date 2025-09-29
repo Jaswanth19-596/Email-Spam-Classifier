@@ -3,16 +3,29 @@ import os
 import pandas as pd
 import pickle
 
-input_dir = os.path.join("data", "processed")
+def load_data(input_path):
+    df = pd.read_csv(input_path)
+    return df
 
-X_train = pd.read_csv(os.path.join(input_dir, "X_train.csv"))
-y_train = pd.read_csv(os.path.join(input_dir, "y_train.csv"))
-
-y_train = y_train.values.ravel()
+def save_model(model, file_path):
+    pickle.dump(model, open(file_path, 'wb'))
 
 
-gnb = GaussianNB()
-gnb.fit(X_train,y_train)
+def main():
 
-pickle.dump(gnb, open('models/model.pkl', 'wb'))
+    # Define input directory
+    input_dir = os.path.join("data", "processed")
 
+    # Load the data
+    X_train = load_data(os.path.join(input_dir, 'X_train.csv'))
+    y_train = load_data(os.path.join(input_dir, 'y_train.csv'))
+    y_train = y_train.values.ravel()
+
+    # Train the model
+    gnb = GaussianNB()
+    gnb.fit(X_train,y_train)
+
+    # Save the model
+    save_model(gnb, 'models/model.pkl')
+
+main()
