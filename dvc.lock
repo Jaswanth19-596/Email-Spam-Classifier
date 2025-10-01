@@ -68,21 +68,28 @@ stages:
       size: 7146
     - path: email_spam_classification/feature_engineering.py
       hash: md5
-      md5: b00d7a6fcfb10ceff186ef9304936b2b
-      size: 1602
+      md5: e71504aa2810eea39038198b38a1965a
+      size: 3157
     params:
       params.yaml:
-        feature_engineering.max_features: 10000
-        feature_engineering.ngram_range: (1,3)
+        feature_engineering.CountVectorizer.max_features: 10000
+        feature_engineering.CountVectorizer.ngram_range:
+        - 1
+        - 3
+        feature_engineering.TfIdfVectorizer.max_features: 10000
+        feature_engineering.TfIdfVectorizer.ngram_range:
+        - 1
+        - 2
+        feature_engineering.type: TfIdfVectorizer
     outs:
     - path: data/processed/X_test.csv
       hash: md5
-      md5: 1ae9762fabc8b685da773bb599fae8d4
-      size: 61478190
+      md5: 4a4022fb68cd26d75a3206010b8dd0d0
+      size: 61472381
     - path: data/processed/X_train.csv
       hash: md5
-      md5: f67a09e948ac253e36e27cbb63a03d04
-      size: 143446146
+      md5: 8f1d69977f9aab4d31a072b3bdf7c2a7
+      size: 143421417
     - path: data/processed/y_test.csv
       hash: md5
       md5: 0e32a57dd0e4e98d0a949fefc99a78f4
@@ -96,42 +103,61 @@ stages:
     deps:
     - path: data/processed/X_train.csv
       hash: md5
-      md5: f67a09e948ac253e36e27cbb63a03d04
-      size: 143446146
+      md5: 8f1d69977f9aab4d31a072b3bdf7c2a7
+      size: 143421417
     - path: data/processed/y_train.csv
       hash: md5
       md5: a426b843a44faf3969476187d0caa9fb
       size: 7146
     - path: email_spam_classification/model_building.py
       hash: md5
-      md5: fb28dc99d7631116286475ef5521ce45
-      size: 668
+      md5: a6049fc448fdce8e577f447b2b9daf72
+      size: 2987
+    params:
+      params.yaml:
+        model_building.GaussianNB.priors:
+        model_building.GaussianNB.var_smoothing: 1e-09
+        model_building.LogisticRegression.C: 1.0
+        model_building.LogisticRegression.max_iter: 100
+        model_building.LogisticRegression.penalty: l2
+        model_building.LogisticRegression.random_state: 42
+        model_building.LogisticRegression.solver: lbfgs
+        model_building.RandomForest.max_depth:
+        model_building.RandomForest.min_samples_leaf: 1
+        model_building.RandomForest.min_samples_split: 2
+        model_building.RandomForest.n_estimators: 100
+        model_building.RandomForest.random_state: 42
+        model_building.SVM.C: 1.0
+        model_building.SVM.gamma: scale
+        model_building.SVM.kernel: rbf
+        model_building.SVM.random_state: 42
+        model_building.type: LogisticRegression
     outs:
     - path: models/model.pkl
       hash: md5
-      md5: bf7c0fd1e3bc5a942b6f43e1bb83db21
-      size: 389622
+      md5: b47370011a409af6998d72c50d2ad1bc
+      size: 149744
   model_evaluation_stage:
     cmd: python email_spam_classification/model_evaluation.py
     deps:
     - path: data/processed/X_test.csv
       hash: md5
-      md5: 1ae9762fabc8b685da773bb599fae8d4
-      size: 61478190
+      md5: 4a4022fb68cd26d75a3206010b8dd0d0
+      size: 61472381
     - path: data/processed/y_test.csv
       hash: md5
       md5: 0e32a57dd0e4e98d0a949fefc99a78f4
       size: 3068
     - path: email_spam_classification/model_evaluation.py
       hash: md5
-      md5: 30350d777d1efd2c40a3391108aa6b38
-      size: 1175
+      md5: f5d60d8a37761ab18a3d83c374c49e58
+      size: 2529
     - path: models/model.pkl
       hash: md5
-      md5: bf7c0fd1e3bc5a942b6f43e1bb83db21
-      size: 389622
+      md5: b47370011a409af6998d72c50d2ad1bc
+      size: 149744
     outs:
     - path: metrics.json
       hash: md5
-      md5: c713800664cbb4e2fefe1709ca5e0d3f
-      size: 110
+      md5: 977349dd8eb92d304eeae809613d776d
+      size: 108
