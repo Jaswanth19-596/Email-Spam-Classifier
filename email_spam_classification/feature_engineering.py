@@ -2,26 +2,67 @@ from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 import os
 import pandas as pd
 import yaml
+import logging
+
+logger = logging.getLogger(__name__)
 
 def load_data(input_path):
-    df = pd.read_csv(input_path)
-    return df
+    logger.info("Loading Data Start")
+    
+    try:
+        df = pd.read_csv(input_path)
+        logger.info("Loaded Data Successfully")
+        return df
+    except Exception:
+        logger.critical(f"Error while loading data at {input_path}")
+        raise
 
-def get_params_yaml(file_path):
-    with open('params.yaml', 'r') as f:
-        params = yaml.safe_load(f)
+def get_params(file_path = 'params.yaml'):
+    logger.info("Loading Params")
+    try:
+        with open(file_path, 'r') as f:
+            params = yaml.safe_load(f)
 
-    ngram_range = eval(params['feature_engineering']['ngram_range'])
-    max_features = int(params['feature_engineering']['max_features'])
+        logger.info("Loaded params successfully")
+        return params['feature_engineering']
+    except Exception:
+        logger.critical(f"Error while loading params at {file_path}")
 
-    return ngram_range, max_features
+def get_vectorizer(params):
+    logger.info("Loading Vectorizer")
+
+    text_vectorizer_name = params['type']
+    hyperparamters = params[text_vectorizer_name]
+
+    # Convert list to tuple for sklearn
+    if 'ngram_range' in hyperparamters:
+        hyperparamters['ngram_range'] = tuple(hyperparamters['ngram_range'])
+
+    textVectorizers = {
+        'TfIdfVectorizer' : TfidfVectorizer,
+        'CountVectorizer' : CountVectorizer
+    }
+
+    textVectorizer = textVectorizers[text_vectorizer_name]
+
+    res = textVectorizer(**hyperparamters)
+    return res
 
 def save(df, output_path):
-    df.to_csv(output_path, index=False)
+    logger.info("Started saving data")
+    try:
+        df.to_csv(output_path, index=False)
+        logger.info("Successfully Saved Data")
+
+    except Exception:
+        logger.critical(f"Error while saving the data at {output_path}")
 
 
 
 def main():
+    logger.info("=" * 50)
+    logger.info("Feature Engineering Stage")
+    logger.info("=" * 50)
 
     # Define the paths of input and output directories
     input_dir = os.path.join("data", "interim")
@@ -34,17 +75,10 @@ def main():
     y_test = load_data(os.path.join(input_dir, 'y_test.csv'))
 
     # Get the parameters
-    method, ngram_range, max_features = get_params_yaml('params.yaml')
+    params = get_params('params.yaml')
 
-    textVectorizer = None
-
-    # Perform Text Vectorization
-    if method == 'tfidf':
-        textVectorizer = TfidfVectorizer(ngram_range=ngram_range, max_features=max_features)
-    else:
-        textVectorizer = CountVectorizer(ngram_range=ngram_range, max_features=max_features)
-
-    
+    # Create the vectorizer
+    textVectorizer = get_vectorizer(params)
 
     X_train = pd.DataFrame(textVectorizer.fit_transform(X_train['text']).toarray())
     X_test = pd.DataFrame(textVectorizer.transform(X_test['text']).toarray())
@@ -55,5 +89,18 @@ def main():
     save(X_test, os.path.join(output_dir, 'X_test.csv'))
     save(y_train, os.path.join(output_dir, 'y_train.csv'))
     save(y_test, os.path.join(output_dir, 'y_test.csv'))
+    logger.info("Feature Engineering Stage End")
 
-main()
+print("Here")
+if __name__ == '__main__':
+    logger.info("Started stage ")
+    print("Here")
+    logging.basicConfig(
+        level = logging.DEBUG,
+        format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers = [logging.FileHandler('logs.log', mode = 'a'),
+                    logging.StreamHandler()]
+    )
+
+
+    main()
