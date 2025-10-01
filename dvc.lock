@@ -131,12 +131,12 @@ stages:
         model_building.SVM.gamma: scale
         model_building.SVM.kernel: rbf
         model_building.SVM.random_state: 42
-        model_building.type: RandomForest
+        model_building.type: GaussianNB
     outs:
     - path: models/model.pkl
       hash: md5
-      md5: b6c5d22d6b70d15e24304eae0ec7ba6c
-      size: 5523925
+      md5: 0b05a4aa760d255b10fe09c7c72e625e
+      size: 389622
   model_evaluation_stage:
     cmd: python email_spam_classification/model_evaluation.py
     deps:
@@ -154,10 +154,10 @@ stages:
       size: 2656
     - path: models/model.pkl
       hash: md5
-      md5: b6c5d22d6b70d15e24304eae0ec7ba6c
-      size: 5523925
+      md5: 0b05a4aa760d255b10fe09c7c72e625e
+      size: 389622
     outs:
     - path: metrics.json
       hash: md5
-      md5: f1214ef6a5451a073b1abc8a79cd6aaf
-      size: 145
+      md5: f32b5efa2998c415f3f7ed297e820232
+      size: 146

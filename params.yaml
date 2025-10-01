@@ -13,7 +13,7 @@ feature_engineering:
     max_features: 10000
 
 model_building:
-  type: RandomForest
+  type: GaussianNB
 
   # Hyperparameters for different models
   GaussianNB:
