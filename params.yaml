@@ -1,5 +1,39 @@
 data_cleaning:
   test_size: 0.3
 feature_engineering:
+  method: tfidf
   ngram_range: (1,3)
   max_features: 10000
+model_building:
+  model_type: LogisticRegression
+
+  # Hyperparameters for different models
+  GaussianNB:
+    var_smoothing: 1.0e-9
+    priors: null
+
+  RandomForest:
+    n_estimators: 100
+    max_depth: null
+    min_samples_split: 2
+    min_samples_leaf: 1
+    random_state: 42
+
+  LogisticRegression:
+    C: 1.0
+    penalty: 'l2'
+    solver: 'lbfgs'
+    max_iter: 100
+    random_state: 42
+
+  SVM:
+    C: 1.0
+    kernel: 'rbf'
+    gamma: 'scale'
+    random_state: 42
+
+  XGBoost:
+    n_estimators: 100
+    learning_rate: 0.1
+    max_depth: 3
+    random_state: 42

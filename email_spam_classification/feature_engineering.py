@@ -1,4 +1,4 @@
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 import os
 import pandas as pd
 import yaml
@@ -34,13 +34,20 @@ def main():
     y_test = load_data(os.path.join(input_dir, 'y_test.csv'))
 
     # Get the parameters
-    ngram_range, max_features = get_params_yaml('params.yaml')
+    method, ngram_range, max_features = get_params_yaml('params.yaml')
+
+    textVectorizer = None
 
     # Perform Text Vectorization
-    cv = TfidfVectorizer(ngram_range=ngram_range, max_features=max_features)
+    if method == 'tfidf':
+        textVectorizer = TfidfVectorizer(ngram_range=ngram_range, max_features=max_features)
+    else:
+        textVectorizer = CountVectorizer(ngram_range=ngram_range, max_features=max_features)
 
-    X_train = pd.DataFrame(cv.fit_transform(X_train['text']).toarray())
-    X_test = pd.DataFrame(cv.transform(X_test['text']).toarray())
+    
+
+    X_train = pd.DataFrame(textVectorizer.fit_transform(X_train['text']).toarray())
+    X_test = pd.DataFrame(textVectorizer.transform(X_test['text']).toarray())
 
 
     # Save the data to the output directory
