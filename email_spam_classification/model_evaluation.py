@@ -65,20 +65,16 @@ def main():
 
     # Find predictions
     y_pred = model.predict(X_test)
-    y_proba = model.predict_proba(X_test)[:, 1]
-
+   
     # Calculate metrics
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred)
     recall = recall_score(y_test, y_pred)
-    roc_score = roc_auc_score(y_test, y_proba)
-
     # Create the dictionary
     metrics_dict={
         'accuracy':accuracy,
         'precision':precision,
         'recall':recall,
-        'roc_score' : roc_score
     }
 
     # Save the metrics
