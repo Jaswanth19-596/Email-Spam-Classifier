@@ -80,16 +80,16 @@ stages:
         feature_engineering.TfIdfVectorizer.ngram_range:
         - 1
         - 2
-        feature_engineering.type: TfIdfVectorizer
+        feature_engineering.type: CountVectorizer
     outs:
     - path: data/processed/X_test.csv
       hash: md5
-      md5: 4a4022fb68cd26d75a3206010b8dd0d0
-      size: 61472381
+      md5: 8eccdca982452236c7fb9876eeb4c1f8
+      size: 30668892
     - path: data/processed/X_train.csv
       hash: md5
-      md5: 8f1d69977f9aab4d31a072b3bdf7c2a7
-      size: 143421417
+      md5: ff682e890a2c4f756e0e4e564abaf304
+      size: 71448891
     - path: data/processed/y_test.csv
       hash: md5
       md5: 0e32a57dd0e4e98d0a949fefc99a78f4
@@ -103,8 +103,8 @@ stages:
     deps:
     - path: data/processed/X_train.csv
       hash: md5
-      md5: 8f1d69977f9aab4d31a072b3bdf7c2a7
-      size: 143421417
+      md5: ff682e890a2c4f756e0e4e564abaf304
+      size: 71448891
     - path: data/processed/y_train.csv
       hash: md5
       md5: a426b843a44faf3969476187d0caa9fb
@@ -131,33 +131,33 @@ stages:
         model_building.SVM.gamma: scale
         model_building.SVM.kernel: rbf
         model_building.SVM.random_state: 42
-        model_building.type: LogisticRegression
+        model_building.type: RandomForest
     outs:
     - path: models/model.pkl
       hash: md5
-      md5: b47370011a409af6998d72c50d2ad1bc
-      size: 149744
+      md5: b6c5d22d6b70d15e24304eae0ec7ba6c
+      size: 5523925
   model_evaluation_stage:
     cmd: python email_spam_classification/model_evaluation.py
     deps:
     - path: data/processed/X_test.csv
       hash: md5
-      md5: 4a4022fb68cd26d75a3206010b8dd0d0
-      size: 61472381
+      md5: 8eccdca982452236c7fb9876eeb4c1f8
+      size: 30668892
     - path: data/processed/y_test.csv
       hash: md5
       md5: 0e32a57dd0e4e98d0a949fefc99a78f4
       size: 3068
     - path: email_spam_classification/model_evaluation.py
       hash: md5
-      md5: f5d60d8a37761ab18a3d83c374c49e58
-      size: 2529
+      md5: c62be76611825e6c6a0e953743acda78
+      size: 2656
     - path: models/model.pkl
       hash: md5
-      md5: b47370011a409af6998d72c50d2ad1bc
-      size: 149744
+      md5: b6c5d22d6b70d15e24304eae0ec7ba6c
+      size: 5523925
     outs:
     - path: metrics.json
       hash: md5
-      md5: 977349dd8eb92d304eeae809613d776d
-      size: 108
+      md5: f1214ef6a5451a073b1abc8a79cd6aaf
+      size: 145

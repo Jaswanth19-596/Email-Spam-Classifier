@@ -2,7 +2,7 @@ data_cleaning:
   test_size: 0.3
 
 feature_engineering:
-  type: TfIdfVectorizer
+  type: CountVectorizer
 
   TfIdfVectorizer:
     ngram_range: [1, 2]
@@ -13,7 +13,7 @@ feature_engineering:
     max_features: 10000
 
 model_building:
-  type: LogisticRegression
+  type: RandomForest
 
   # Hyperparameters for different models
   GaussianNB:
