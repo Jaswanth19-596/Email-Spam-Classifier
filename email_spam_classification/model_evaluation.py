@@ -8,6 +8,7 @@ import os
 import logging
 import mlflow
 from dotenv import load_dotenv
+import yaml
 
 
 load_dotenv()
@@ -15,11 +16,24 @@ load_dotenv()
 os.environ['DATABRICKS_HOST'] = 'https://dbc-61387035-3f92.cloud.databricks.com'
 os.environ['DATABRICKS_TOKEN'] = os.getenv('DATABRICKS_ACCESS_TOKEN')
 
-
+mlflow.set_tracking_uri('databricks')
 mlflow.set_experiment('/Users/madhajaswanth@gmail.com/TempExperiment')
 
 
 logger = logging.getLogger(__name__)
+
+def load_params(params_path = 'params.yaml'):
+    logger.info(f"Started loading the params at {params_path}")
+
+    try:
+        with open(params_path, 'r') as f:
+            params = yaml.safe_load(f)
+        logger.info(f"Successfully loaded the params")
+        return params['model_building']
+    except Exception:
+        logger.info(f"Error while loading the params at {params_path}")
+        raise
+
 
 def load_model(file_path):
     logger.info(f"Starting Model Loading from {file_path}")
@@ -66,6 +80,7 @@ def main():
     logger.info("=" * 50)
     logger.info("Model Evaluation Stage Start")
     logger.info("=" * 50)
+
     # Load the model
     model = load_model('models/model.pkl')
 
@@ -90,9 +105,16 @@ def main():
         'recall':recall,
     }
 
-    mlflow.log_metric('Accuracy', accuracy)
-    mlflow.log_metric('Precision', precision)
-    mlflow.log_metric('Recall', recall)
+    with mlflow.start_run():
+        mlflow.log_metric('Accuracy', accuracy)
+        mlflow.log_metric('Precision', precision)
+        mlflow.log_metric('Recall', recall)
+
+        if hasattr(model, 'get_params'):
+            params = model.get_params()
+            mlflow.log_params(params)
+
+        mlflow.sklearn.log_model(model, input_example=X_test.iloc[[0]])
 
 
     # Save the metrics
