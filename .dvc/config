@@ -1,4 +1,6 @@
 [core]
-    remote = myremote
+    remote = remote
 ['remote "myremote"']
     url = /Users/jaswanth/Desktop
+['remote "remote"']
+    url = s3://emailspamclassificationbucket

@@ -30,8 +30,6 @@ stages:
       - feature_engineering.type
       - feature_engineering.TfIdfVectorizer.ngram_range
       - feature_engineering.TfIdfVectorizer.max_features
-      - feature_engineering.CountVectorizer.ngram_range
-      - feature_engineering.CountVectorizer.max_features
     outs:
       - data/processed/X_test.csv
       - data/processed/X_train.csv
@@ -45,23 +43,11 @@ stages:
       - email_spam_classification/model_building.py
     params:
       - model_building.type
-      - model_building.GaussianNB.var_smoothing
-      - model_building.GaussianNB.priors
       - model_building.RandomForest.n_estimators
       - model_building.RandomForest.max_depth
       - model_building.RandomForest.min_samples_split
       - model_building.RandomForest.min_samples_leaf
       - model_building.RandomForest.random_state
-      - model_building.LogisticRegression.C
-      - model_building.LogisticRegression.penalty
-      - model_building.LogisticRegression.solver
-      - model_building.LogisticRegression.max_iter
-      - model_building.LogisticRegression.random_state
-      - model_building.SVM.C
-      - model_building.SVM.kernel
-      - model_building.SVM.gamma
-      - model_building.SVM.random_state
-
     outs:
       - models/model.pkl
   model_evaluation_stage:

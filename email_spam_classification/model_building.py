@@ -1,3 +1,4 @@
+
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -7,6 +8,7 @@ import pandas as pd
 import pickle
 import yaml
 import logging
+import mlflow
 
 logger = logging.getLogger(__name__)
 
@@ -82,6 +84,9 @@ def main():
     # Load the params of this module
     params = load_params()
 
+    # Log the params
+    mlflow.log_params(params)
+
     # Build the model for using parameters
     model = get_model(params)
 
@@ -100,3 +105,4 @@ if __name__ == '__main__':
         handlers = [logging.FileHandler('logs.log', mode = 'a')]
     )
     main()
+

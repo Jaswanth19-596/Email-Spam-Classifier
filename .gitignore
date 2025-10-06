@@ -149,6 +149,8 @@ celerybeat.pid
 .venv
 env/
 venv/
+/mlruns
+mlruns/
 ENV/
 env.bak/
 venv.bak/
@@ -193,3 +195,4 @@ cython_debug/
 /metrics.json
 
 venvemailspam
+

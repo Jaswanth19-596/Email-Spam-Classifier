@@ -1,3 +1,4 @@
+
 import pandas as pd
 import numpy as np
 import pickle
@@ -5,6 +6,18 @@ import json
 from sklearn.metrics import accuracy_score,precision_score, recall_score, roc_auc_score
 import os
 import logging
+import mlflow
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+os.environ['DATABRICKS_HOST'] = 'https://dbc-61387035-3f92.cloud.databricks.com'
+os.environ['DATABRICKS_TOKEN'] = os.getenv('DATABRICKS_ACCESS_TOKEN')
+
+
+mlflow.set_experiment('/Users/madhajaswanth@gmail.com/TempExperiment')
+
 
 logger = logging.getLogger(__name__)
 
@@ -76,6 +89,11 @@ def main():
         'precision':precision,
         'recall':recall,
     }
+
+    mlflow.log_metric('Accuracy', accuracy)
+    mlflow.log_metric('Precision', precision)
+    mlflow.log_metric('Recall', recall)
+
 
     # Save the metrics
     save(metrics_dict, 'metrics.json')
