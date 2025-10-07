@@ -118,7 +118,7 @@ def main():
                 params = model.get_params()
                 mlflow.log_params(params)
 
-            mlflow.sklearn.log_model(model, input_example=X_test.iloc[[0]])
+            mlflow.sklearn.log_model(model, input_example=X_test.iloc[[0]], registered_model_name='development.models.spam_classifier')
     except Exception as e:
         logger.error("Exception while Starting the experiment")
         raise e

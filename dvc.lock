@@ -135,8 +135,8 @@ stages:
       size: 2762
     - path: email_spam_classification/model_evaluation.py
       hash: md5
-      md5: b245c4c654f92f19282a3d940f2a9435
-      size: 4197
+      md5: cd13ccfcccb2cd8e52d8a522fa1a901f
+      size: 4257
     - path: models/model.pkl
       hash: md5
       md5: 5c2d0aeb64b5d3fe2f0cb0e97c8d9e51
