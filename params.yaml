@@ -1,5 +1,5 @@
 data_cleaning:
-  test_size: 0.25
+  test_size: 0.27
 
 feature_engineering:
   type: TfIdfVectorizer

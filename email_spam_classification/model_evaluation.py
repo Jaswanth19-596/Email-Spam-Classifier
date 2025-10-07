@@ -92,12 +92,14 @@ def main():
     y_test = load_data(os.path.join(input_dir, 'y_test.csv'))
 
     # Find predictions
+    logger.info("Predicting the Results using the Model")
     y_pred = model.predict(X_test)
    
     # Calculate metrics
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred)
     recall = recall_score(y_test, y_pred)
+
     # Create the dictionary
     metrics_dict={
         'accuracy':accuracy,
@@ -105,21 +107,27 @@ def main():
         'recall':recall,
     }
 
-    with mlflow.start_run():
-        mlflow.log_metric('Accuracy', accuracy)
-        mlflow.log_metric('Precision', precision)
-        mlflow.log_metric('Recall', recall)
+    logger.info("Starting the Run in experiment")
+    try:
+        with mlflow.start_run():
+            mlflow.log_metric('Accuracy', accuracy)
+            mlflow.log_metric('Precision', precision)
+            mlflow.log_metric('Recall', recall)
 
-        if hasattr(model, 'get_params'):
-            params = model.get_params()
-            mlflow.log_params(params)
+            if hasattr(model, 'get_params'):
+                params = model.get_params()
+                mlflow.log_params(params)
 
-        mlflow.sklearn.log_model(model, input_example=X_test.iloc[[0]])
-
+            mlflow.sklearn.log_model(model, input_example=X_test.iloc[[0]])
+    except Exception as e:
+        logger.error("Exception while Starting the experiment")
+        raise e
+    
 
     # Save the metrics
     save(metrics_dict, 'metrics.json')
     logger.info("Model Evaluation Stage End")
+
 
 
 
@@ -130,5 +138,11 @@ if __name__ == '__main__':
         format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers = [logging.FileHandler('logs.log', mode = 'a')]
     )
+
+     # Suppress verbose logs from third-party libraries
+    logging.getLogger('databricks').setLevel(logging.WARNING)
+    logging.getLogger('urllib3').setLevel(logging.WARNING)
+    logging.getLogger('git').setLevel(logging.WARNING)
+    logging.getLogger('mlflow').setLevel(logging.WARNING)  
 
     main()
