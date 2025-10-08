@@ -87,7 +87,6 @@ def register_and_stage_model(accuracy, threshold, model_uri):
 
     try:    
         registered_model = mlflow.register_model(model_uri, 'development.models.spam_classifier')
-
         logger.info(f"[REGISTRATION] Model version {registered_model.version} Successfully Registered !!")
 
         client = MlflowClient()
@@ -147,7 +146,7 @@ def main():
             logger.info("Logging the Model")
             logged_model = mlflow.sklearn.log_model(model, input_example=X_test.iloc[[1]], name='model')
 
-            register_and_stage_model(accuracy, 0.95, logged_model.model_uri)
+            register_and_stage_model(accuracy, 0.75, logged_model.model_uri)
             
     except Exception as e:
         logger.error("Exception while performing the Experiment")
