@@ -18,6 +18,7 @@ stages:
       - data/interim/X_train.csv
       - data/interim/y_test.csv
       - data/interim/y_train.csv
+      - models/text_cleaner.pkl
   feature_engineering_stage:
     cmd: python email_spam_classification/feature_engineering.py
     deps:
@@ -35,6 +36,7 @@ stages:
       - data/processed/X_train.csv
       - data/processed/y_test.csv
       - data/processed/y_train.csv
+      - models/text_vectorizer.pkl
   model_building_stage:
     cmd: python email_spam_classification/model_building.py
     deps:
@@ -59,5 +61,3 @@ stages:
       - email_spam_classification/model_evaluation.py
     metrics:
       - metrics.json
-  stage_change:
-    cmd: python email_spam_classification/model_stage_change.py

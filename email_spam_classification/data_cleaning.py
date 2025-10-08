@@ -6,15 +6,13 @@ from nltk.corpus import stopwords
 import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
 import yaml
 import logging
+from sklearn.base import BaseEstimator, TransformerMixin
+import joblib
 
 logger = logging.getLogger(__name__)
-
-nlp = spacy.load('en_core_web_sm')
-stop_words = set(stopwords.words('english'))
-nlp_model = spacy.load('en_core_web_sm')
-
 
 def load_data(input_path):
   logger.info("Started Loading Data")
@@ -28,81 +26,68 @@ def load_data(input_path):
     logger.critical(f"File Not Found at {input_path}")
     raise
 
-# Expanding Contractions
-def expand_contractions(text):
-  return contractions.fix(text)
+class TextCleaner(BaseEstimator, TransformerMixin):
 
-# Tokenization
-def spacy_tokenize(text):
-  doc = nlp(text)
-  tokens = [token.text.strip() for token in doc]
-  return tokens
+  def __init__(self):
+    self.nlp = spacy.load('en_core_web_sm')
+    self.stop_words = set(stopwords.words('english'))
+    self.nlp_model = spacy.load('en_core_web_sm')
+    
+  # Expanding Contractions
+  def expand_contractions(self, text):
+    return contractions.fix(text)
 
+  # Tokenization
+  def spacy_tokenize(self, text):
+    doc = self.nlp(text)
+    tokens = [token.text.strip() for token in doc]
+    return tokens
 
-# Keeps only letters, numbers, and spaces
-def remove_special_chars_regex(text):
+  # Keeps only letters, numbers, and spaces
+  def remove_special_chars_regex(self, text):
     temp = []
     for word in text:
         cleaned_word = re.sub(r'[^a-zA-Z0-9\s]', '', word)
         if cleaned_word != '':
             temp.append(cleaned_word)
-
     return temp
 
 
-def remove_stopwords(words):
-
-  temp = []
-  for word in words:
-    if word not in stop_words:
-      temp.append(word)
-
-  return temp
+  def remove_stopwords(self, words):
+    temp = []
+    for word in words:
+      if word not in self.stop_words:
+        temp.append(word)
+    return temp
 
 
-def lemmatize(words):
-  temp = []
-  for word in words:
-    doc = nlp_model(word)
-    temp.append(doc[0].lemma_)
-  return temp
+  def lemmatize(self, words):
+    temp = []
+    for word in words:
+      doc = self.nlp_model(word)
+      temp.append(doc[0].lemma_)
+    return temp
+
+  def clean_data(self, text):
+    text = text.lower()
+    text = self.expand_contractions(text)
+    tokens = self.spacy_tokenize(text)
+    tokens = self.remove_special_chars_regex(tokens)
+    tokens = self.remove_stopwords(tokens)
+    tokens = self.lemmatize(tokens)
+
+    if len(tokens) < 1:
+      return 'Empty'
+    return ' '.join(tokens)
 
 
-def clean_data(df):
+  def fit(self, X, y = None):
+    return self
+  
+  def transform(self, X: pd.Series) -> pd.Series:
+    return X.apply(self.clean_data)
 
-  logger.info("Cleaning Data Start")
 
-   # Transforming text to lower case.
-  df['text'] = df['text'].str.lower()
-
-  # Expand the Contractions
-  df['text'] = df['text'].apply(expand_contractions)
-
-  # Tokenization
-  df['text'] = df['text'].apply(spacy_tokenize)
-
-  # Remove the special Characters
-  df['text'] = df['text'].apply(remove_special_chars_regex)
-
-  # Remove Stopwords
-  df['text'] = df['text'].apply(remove_stopwords)
-
-  # Apply lemmatization
-  df['text'] = df['text'].apply(lemmatize)
-
-  # Rejoining the words to form a sentence
-  df['text'] =  df['text'].str.join(' ').str.strip()
-
-  # Removing null values and duplicates
-  df = df.drop_duplicates()
-
-  df = df.dropna(subset=['text'])
-
-  df = df[df['text'] != '']
-
-  logger.info("Cleaning Data End")
-
-  return df
 
 # Get the params from the YAML file.
 def get_params_yaml(file_path):
@@ -143,9 +128,15 @@ def main():
   # Load the data
   df = load_data(input_path)
 
-  # clean the data
-  df = clean_data(df)
+  # Clean the data
+  cleaning_pipeline = TextCleaner()
+  df['text'] = cleaning_pipeline.fit_transform(df['text'])
 
+
+
+  # Saving the text cleaner
+  joblib.dump(cleaning_pipeline, 'models/text_cleaner.pkl')
+  
   # Split the data into training and testing data
   X = df.drop(columns = 'class')
   y = df['class']

@@ -4,6 +4,7 @@ import os
 import pandas as pd
 import yaml
 import logging
+import joblib
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +48,8 @@ def get_vectorizer(params):
     textVectorizer = textVectorizers[text_vectorizer_name]
 
     res = textVectorizer(**hyperparamters)
+
+    logger.info("Returning Text Vectorizer")
     return res
 
 def save(df, output_path):
@@ -75,15 +78,19 @@ def main():
     y_train = load_data(os.path.join(input_dir, 'y_train.csv'))
     y_test = load_data(os.path.join(input_dir, 'y_test.csv'))
 
+
     # Get the parameters
     params = get_params('params.yaml')
 
     # Create the vectorizer
     textVectorizer = get_vectorizer(params)
 
+
     X_train = pd.DataFrame(textVectorizer.fit_transform(X_train['text']).toarray())
     X_test = pd.DataFrame(textVectorizer.transform(X_test['text']).toarray())
 
+    # Save the vectorizer
+    joblib.dump(textVectorizer, 'models/text_vectorizer.pkl')
 
     # Save the data to the output directory
     save(X_train, os.path.join(output_dir, 'X_train.csv'))
@@ -92,10 +99,8 @@ def main():
     save(y_test, os.path.join(output_dir, 'y_test.csv'))
     logger.info("Feature Engineering Stage End")
 
-print("Here")
 if __name__ == '__main__':
     logger.info("Started stage ")
-    print("Here")
     logging.basicConfig(
         level = logging.DEBUG,
         format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
