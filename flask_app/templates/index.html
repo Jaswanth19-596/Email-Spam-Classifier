@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Spam Detector</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 700px;
+        width: 100%;
+        padding: 40px;
+      }
+
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 2.5em;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 1.1em;
+      }
+
+      .mlflow-badge {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 0.9em;
+        color: #667eea;
+        font-weight: 600;
+      }
+
+      .input-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 10px;
+        color: #333;
+        font-weight: 600;
+        font-size: 1.1em;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 150px;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1em;
+        font-family: inherit;
+        resize: vertical;
+        transition: border-color 0.3s;
+      }
+
+      textarea:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      button {
+        flex: 1;
+        padding: 15px;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .predict-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .predict-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+      }
+
+      .clear-btn {
+        background: #f0f0f0;
+        color: #333;
+      }
+
+      .clear-btn:hover {
+        background: #e0e0e0;
+      }
+
+      .retrain-btn {
+        background: #4caf50;
+        color: white;
+        font-size: 0.9em;
+        padding: 10px;
+      }
+
+      .retrain-btn:hover {
+        background: #45a049;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .result-box {
+        margin-top: 30px;
+        padding: 25px;
+        border-radius: 10px;
+        display: none;
+      }
+
+      .result-box.spam {
+        background: #ffebee;
+        border: 2px solid #f44336;
+      }
+
+      .result-box.ham {
+        background: #e8f5e9;
+        border: 2px solid #4caf50;
+      }
+
+      .result-title {
+        font-size: 1.5em;
+        font-weight: 600;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
+      .result-box.spam .result-title {
+        color: #f44336;
+      }
+
+      .result-box.ham .result-title {
+        color: #4caf50;
+      }
+
+      .result-details {
+        margin-top: 15px;
+      }
+
+      .result-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        background: white;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+
+      .result-label {
+        font-weight: 600;
+        color: #333;
+      }
+
+      .result-value {
+        color: #666;
+      }
+
+      .loading {
+        text-align: center;
+        color: #667eea;
+        font-weight: 600;
+        display: none;
+        margin-top: 20px;
+      }
+
+      .error-box {
+        background: #ffebee;
+        border: 2px solid #f44336;
+        padding: 15px;
+        border-radius: 10px;
+        color: #f44336;
+        margin-top: 20px;
+        display: none;
+      }
+
+      .examples {
+        margin-top: 30px;
+        padding: 20px;
+        background: #f5f5f5;
+        border-radius: 10px;
+      }
+
+      .examples h3 {
+        color: #333;
+        margin-bottom: 15px;
+      }
+
+      .example-item {
+        padding: 10px;
+        background: white;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 2px solid transparent;
+      }
+
+      .example-item:hover {
+        border-color: #667eea;
+        transform: translateX(5px);
+      }
+
+      .example-label {
+        font-size: 0.8em;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .example-label.spam-label {
+        color: #f44336;
+      }
+
+      .example-label.ham-label {
+        color: #4caf50;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #667eea;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Email Spam Detector</h1>
+
+      <div class="input-group">
+        <label for="emailText">Enter Email Text:</label>
+        <textarea
+          id="emailText"
+          placeholder="Type or paste your email content here...&#10;&#10;Example: 'Congratulations! You've won a free iPhone. Click here now!'"
+        ></textarea>
+      </div>
+
+      <div class="button-group">
+        <button class="predict-btn" onclick="predictSpam()">
+          Check for Spam
+        </button>
+      </div>
+
+      <div class="spinner" id="spinner"></div>
+      <div class="loading" id="loading">Analyzing email...</div>
+
+      <div class="result-box" id="resultBox">
+        <div class="result-title" id="resultTitle"></div>
+      </div>
+
+      <div class="error-box" id="errorBox"></div>
+    </div>
+
+    <script>
+      async function predictSpam() {
+        const emailText = document.getElementById('emailText').value.trim();
+        const resultBox = document.getElementById('resultBox');
+        const errorBox = document.getElementById('errorBox');
+        const loading = document.getElementById('loading');
+        const spinner = document.getElementById('spinner');
+
+        // Hide previous results
+        resultBox.style.display = 'none';
+        errorBox.style.display = 'none';
+
+        if (!emailText) {
+          showError('Please enter some email text!');
+          return;
+        }
+
+        // Show loading
+        loading.style.display = 'block';
+        spinner.style.display = 'block';
+
+        try {
+          const response = await fetch('/predict', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: emailText }),
+          });
+
+          const data = await response.json();
+
+          // Hide loading
+          loading.style.display = 'none';
+          spinner.style.display = 'none';
+
+          if (response.ok) {
+            displayResult(data);
+          } else {
+            showError(data.error || 'An error occurred');
+          }
+        } catch (error) {
+          loading.style.display = 'none';
+          spinner.style.display = 'none';
+          showError('Network error: ' + error.message);
+        }
+      }
+
+      function displayResult(data) {
+        const resultBox = document.getElementById('resultBox');
+        const resultTitle = document.getElementById('resultTitle');
+        const prediction = document.getElementById('prediction');
+        // Set result class
+        resultBox.className = 'result-box ' + (data.is_spam ? 'spam' : 'ham');
+
+        // Set result text
+        resultTitle.textContent = data.is_spam
+          ? 'SPAM DETECTED!'
+          : 'NOT SPAM (HAM)';
+
+        // Show result
+        resultBox.style.display = 'block';
+      }
+
+      function showError(message) {
+        const errorBox = document.getElementById('errorBox');
+        errorBox.textContent = '❌ Error: ' + message;
+        errorBox.style.display = 'block';
+      }
+
+      function clearForm() {
+        document.getElementById('emailText').value = '';
+        document.getElementById('resultBox').style.display = 'none';
+        document.getElementById('errorBox').style.display = 'none';
+      }
+
+      // Allow Enter key to submit (Ctrl+Enter in textarea)
+      document
+        .getElementById('emailText')
+        .addEventListener('keydown', function (e) {
+          if (e.ctrlKey && e.key === 'Enter') {
+            predictSpam();
+          }
+        });
+    </script>
+  </body>
+</html>

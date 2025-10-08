@@ -145,7 +145,7 @@ def main():
                 mlflow.log_params(params)
 
             logger.info("Logging the Model")
-            logged_model = mlflow.sklearn.log_model(model, input_example=X_test.iloc[[0]], name='model')
+            logged_model = mlflow.sklearn.log_model(model, input_example=X_test.iloc[[1]], name='model')
 
             register_and_stage_model(accuracy, 0.95, logged_model.model_uri)
             
