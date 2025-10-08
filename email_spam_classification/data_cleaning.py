@@ -1,16 +1,12 @@
-import contractions
-import re
-import spacy
-import nltk
-from nltk.corpus import stopwords
+
 import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 import yaml
 import logging
-from sklearn.base import BaseEstimator, TransformerMixin
 import joblib
+from utils.text_cleaner import TextCleaner
 
 logger = logging.getLogger(__name__)
 
@@ -25,67 +21,6 @@ def load_data(input_path):
   except FileNotFoundError:
     logger.critical(f"File Not Found at {input_path}")
     raise
-
-class TextCleaner(BaseEstimator, TransformerMixin):
-
-  def __init__(self):
-    self.nlp = spacy.load('en_core_web_sm')
-    self.stop_words = set(stopwords.words('english'))
-    self.nlp_model = spacy.load('en_core_web_sm')
-    
-  # Expanding Contractions
-  def expand_contractions(self, text):
-    return contractions.fix(text)
-
-  # Tokenization
-  def spacy_tokenize(self, text):
-    doc = self.nlp(text)
-    tokens = [token.text.strip() for token in doc]
-    return tokens
-
-  # Keeps only letters, numbers, and spaces
-  def remove_special_chars_regex(self, text):
-    temp = []
-    for word in text:
-        cleaned_word = re.sub(r'[^a-zA-Z0-9\s]', '', word)
-        if cleaned_word != '':
-            temp.append(cleaned_word)
-    return temp
-
-
-  def remove_stopwords(self, words):
-    temp = []
-    for word in words:
-      if word not in self.stop_words:
-        temp.append(word)
-    return temp
-
-
-  def lemmatize(self, words):
-    temp = []
-    for word in words:
-      doc = self.nlp_model(word)
-      temp.append(doc[0].lemma_)
-    return temp
-
-  def clean_data(self, text):
-    text = text.lower()
-    text = self.expand_contractions(text)
-    tokens = self.spacy_tokenize(text)
-    tokens = self.remove_special_chars_regex(tokens)
-    tokens = self.remove_stopwords(tokens)
-    tokens = self.lemmatize(tokens)
-
-    if len(tokens) < 1:
-      return 'Empty'
-    return ' '.join(tokens)
-
-
-  def fit(self, X, y = None):
-    return self
-  
-  def transform(self, X: pd.Series) -> pd.Series:
-    return X.apply(self.clean_data)
 
 
 
@@ -131,8 +66,6 @@ def main():
   # Clean the data
   cleaning_pipeline = TextCleaner()
   df['text'] = cleaning_pipeline.fit_transform(df['text'])
-
-
 
   # Saving the text cleaner
   joblib.dump(cleaning_pipeline, 'models/text_cleaner.pkl')

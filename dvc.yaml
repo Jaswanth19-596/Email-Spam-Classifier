@@ -1,16 +1,17 @@
 stages:
   data_ingestion_stage:
-    cmd: python email_spam_classification/data_ingestion.py
+    cmd: python -m email_spam_classification.data_ingestion
     deps:
       - data/raw/emails.csv
       - email_spam_classification/data_ingestion.py
     outs:
       - data/interim/data.csv
   data_cleaning_stage:
-    cmd: python email_spam_classification/data_cleaning.py
+    cmd: python -m email_spam_classification.data_cleaning
     deps:
       - data/interim/data.csv
       - email_spam_classification/data_cleaning.py
+      - utils/text_cleaner.py
     params:
       - data_cleaning.test_size
     outs:
@@ -20,7 +21,7 @@ stages:
       - data/interim/y_train.csv
       - models/text_cleaner.pkl
   feature_engineering_stage:
-    cmd: python email_spam_classification/feature_engineering.py
+    cmd: python -m email_spam_classification.feature_engineering
     deps:
       - data/interim/X_test.csv
       - data/interim/X_train.csv
@@ -38,7 +39,7 @@ stages:
       - data/processed/y_train.csv
       - models/text_vectorizer.pkl
   model_building_stage:
-    cmd: python email_spam_classification/model_building.py
+    cmd: python -m email_spam_classification.model_building
     deps:
       - data/processed/X_train.csv
       - data/processed/y_train.csv
@@ -53,7 +54,7 @@ stages:
     outs:
       - models/model.pkl
   model_evaluation_stage:
-    cmd: python email_spam_classification/model_evaluation.py
+    cmd: python -m email_spam_classification.model_evaluation
     deps:
       - data/processed/X_test.csv
       - data/processed/y_test.csv
