@@ -7,6 +7,7 @@ from sklearn.metrics import accuracy_score,precision_score, recall_score, roc_au
 import os
 import logging
 import mlflow
+from mlflow import MlflowClient
 from dotenv import load_dotenv
 import yaml
 
@@ -76,6 +77,29 @@ def save(metrics_dict, file_path):
         raise
 
 
+def register_and_stage_model(accuracy, threshold, model_uri):
+
+    if accuracy <= threshold:
+        logger.info(f"[VALIDATION] Model's accuracy {accuracy} is less than threshold {threshold}")
+        return
+    
+    logger.info("[VALIDATION] Model has passed the accuracy threshold : Registering the Model")
+
+    try:    
+        registered_model = mlflow.register_model(model_uri, 'development.models.spam_classifier')
+
+        logger.info(f"[REGISTRATION] Model version {registered_model.version} Successfully Registered !!")
+
+        client = MlflowClient()
+        client.set_registered_model_alias('development.models.spam_classifier', "Staging", registered_model.version)
+
+        logger.info(f"[PROMOTION] Model moved to stage: Staging")
+    except Exception as e:
+        logger.error("Exception while registering and staging the model")
+        raise e
+
+
+
 def main():
     logger.info("=" * 50)
     logger.info("Model Evaluation Stage Start")
@@ -109,7 +133,9 @@ def main():
 
     logger.info("Starting the Run in experiment")
     try:
-        with mlflow.start_run():
+        with mlflow.start_run() as run:
+            logger.info("Logging the Metrics and Params")
+
             mlflow.log_metric('Accuracy', accuracy)
             mlflow.log_metric('Precision', precision)
             mlflow.log_metric('Recall', recall)
@@ -118,9 +144,13 @@ def main():
                 params = model.get_params()
                 mlflow.log_params(params)
 
-            mlflow.sklearn.log_model(model, input_example=X_test.iloc[[0]], registered_model_name='development.models.spam_classifier')
+            logger.info("Logging the Model")
+            logged_model = mlflow.sklearn.log_model(model, input_example=X_test.iloc[[0]], name='model')
+
+            register_and_stage_model(accuracy, 0.95, logged_model.model_uri)
+            
     except Exception as e:
-        logger.error("Exception while Starting the experiment")
+        logger.error("Exception while performing the Experiment")
         raise e
     
 
