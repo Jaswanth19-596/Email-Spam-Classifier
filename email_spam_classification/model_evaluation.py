@@ -1,9 +1,9 @@
 import json
 import logging
 import os
-import joblib
 
 from dotenv import load_dotenv
+import joblib
 import mlflow
 from mlflow import MlflowClient
 import pandas as pd

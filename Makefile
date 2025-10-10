@@ -7,9 +7,9 @@ linting-check:
 security-check:
 	bandit -r . -ll --exclude ./venv,./env,./.venv
 
-format:
+format-fix:
 	black .
 
-lint:
+lint-fix:
 	ruff check . --fix
 
