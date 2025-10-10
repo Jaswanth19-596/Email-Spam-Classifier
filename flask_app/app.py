@@ -23,7 +23,7 @@ vectorizer = None
 text_cleaner = None
 
 
-os.environ["DATABRICKS_HOST"] = "https://dbc-61387035-3f92.cloud.databricks.com"
+os.environ["DATABRICKS_HOST"] = os.getenv("DATABRICKS_HOST")
 os.environ["DATABRICKS_TOKEN"] = os.getenv("DATABRICKS_ACCESS_TOKEN")
 
 mlflow.set_tracking_uri("databricks")

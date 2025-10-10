@@ -110,8 +110,8 @@ stages:
       nfiles: 4
     - path: email_spam_classification/model_evaluation.py
       hash: md5
-      md5: a4a7152a2d4e3dad7ddf142345113fc3
-      size: 5348
+      md5: dd7a6eb2ed2ab7e8dc4f212ff4fc6b50
+      size: 5328
     - path: models/model.pkl
       hash: md5
       md5: 26d4cee3d20bd77ca5b908ab07ac11ee
