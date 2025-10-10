@@ -85,9 +85,9 @@ def main():
     logger.info("Starting the Data Ingestion  Pipeline")
     logger.info("=" * 50)
 
-    input_path = os.path.join("data", "raw", "emails.csv")
+    input_path = os.path.join("data", "emails.csv")
     # input_path2 = os.path.join("data", "raw", "real_emails2.csv")
-    output_dir = os.path.join("data", "interim")
+    output_dir = os.path.join("data", "raw")
     output_path = os.path.join(output_dir, "data.csv")
 
     df = load_data(input_path)
@@ -96,6 +96,8 @@ def main():
     # df = pd.concat([df, df2])
 
     df = basic_cleaning(df)
+
+    os.makedirs(output_dir, exist_ok=True)
     save(df, output_path)
 
     logger.info("Completed Data Ingestion Pipeline Successfully")

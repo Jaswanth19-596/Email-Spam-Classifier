@@ -93,6 +93,7 @@ def main():
     # Save the vectorizer
     joblib.dump(textVectorizer, "models/text_vectorizer.pkl")
 
+    os.makedirs(output_dir, exist_ok=True)
     # Save the data to the output directory
     save(X_train, os.path.join(output_dir, "X_train.csv"))
     save(X_test, os.path.join(output_dir, "X_test.csv"))

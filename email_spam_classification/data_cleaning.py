@@ -55,7 +55,7 @@ def main():
     logger.info("=" * 50)
 
     # Create the input path and output directory
-    input_path = os.path.join("data", "interim", "data.csv")
+    input_path = os.path.join("data", "raw", "data.csv")
     output_dir = os.path.join("data", "interim")
 
     # Load the data
@@ -78,6 +78,7 @@ def main():
         X, y, test_size=test_size, stratify=y, random_state=32
     )
 
+    os.makedirs(output_dir, exist_ok=True)
     # Save the data
     save(X_train, os.path.join(output_dir, "X_train.csv"))
     save(X_test, os.path.join(output_dir, "X_test.csv"))

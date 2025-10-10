@@ -2,47 +2,37 @@ stages:
   data_ingestion_stage:
     cmd: python -m email_spam_classification.data_ingestion
     deps:
-      - data/raw/emails.csv
       - email_spam_classification/data_ingestion.py
+      - data/emails.csv
     outs:
-      - data/interim/data.csv
+      - data/raw/
   data_cleaning_stage:
     cmd: python -m email_spam_classification.data_cleaning
     deps:
-      - data/interim/data.csv
+      - data/raw/
       - email_spam_classification/data_cleaning.py
       - utils/text_cleaner.py
     params:
       - data_cleaning.test_size
     outs:
-      - data/interim/X_test.csv
-      - data/interim/X_train.csv
-      - data/interim/y_test.csv
-      - data/interim/y_train.csv
+      - data/interim/
       - models/text_cleaner.pkl
   feature_engineering_stage:
     cmd: python -m email_spam_classification.feature_engineering
     deps:
-      - data/interim/X_test.csv
-      - data/interim/X_train.csv
-      - data/interim/y_test.csv
-      - data/interim/y_train.csv
+      - data/interim/
       - email_spam_classification/feature_engineering.py
     params:
       - feature_engineering.type
       - feature_engineering.TfIdfVectorizer.ngram_range
       - feature_engineering.TfIdfVectorizer.max_features
     outs:
-      - data/processed/X_test.csv
-      - data/processed/X_train.csv
-      - data/processed/y_test.csv
-      - data/processed/y_train.csv
+      - data/processed/
       - models/text_vectorizer.pkl
   model_building_stage:
     cmd: python -m email_spam_classification.model_building
     deps:
-      - data/processed/X_train.csv
-      - data/processed/y_train.csv
+      - data/processed/
       - email_spam_classification/model_building.py
     params:
       - model_building.type
@@ -56,8 +46,7 @@ stages:
   model_evaluation_stage:
     cmd: python -m email_spam_classification.model_evaluation
     deps:
-      - data/processed/X_test.csv
-      - data/processed/y_test.csv
+      - data/processed/
       - models/model.pkl
       - email_spam_classification/model_evaluation.py
     metrics:
