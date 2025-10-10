@@ -7,6 +7,7 @@ import joblib
 import pandas as pd
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 import pytest
+import yaml
 
 
 load_dotenv()
@@ -49,7 +50,10 @@ class TestBasicFunctionality:
         text = ["Hello how are you"]
         cleaned_text = text_cleaner.fit_transform(pd.Series(text))
 
-        columns = [str(i) for i in range(10000)]
+        with open('params.yaml', 'r') as f:
+            params = yaml.safe_load(f) 
+
+        columns = [str(i) for i in range(params['feature_engineering']['TfIdfVectorizer']['max_features'])]
         input_data = pd.DataFrame(
             vectorizer.transform(cleaned_text).toarray(), columns=columns
         )

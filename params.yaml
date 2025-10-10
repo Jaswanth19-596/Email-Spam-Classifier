@@ -6,7 +6,7 @@ feature_engineering:
 
   TfIdfVectorizer:
     ngram_range: [1, 2]
-    max_features: 10000
+    max_features: 1000
 
 model_building:
   type: RandomForest
