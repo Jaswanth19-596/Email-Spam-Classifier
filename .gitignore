@@ -199,3 +199,4 @@ cython_debug/
 
 venvemailspam
 
+/emails.csv
