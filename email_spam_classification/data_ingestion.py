@@ -27,27 +27,27 @@ def basic_cleaning(df):
     logger.info("Started Cleaning the data")
 
     try:
-        df = df[
-            ~(
-                (df["class"] == "Social")
-                | (df["class"] == "Forums")
-                | (df["class"] == "Spam")
-                | (df["class"] == "Updates")
-            )
-        ]
-        df = df.reset_index(drop=True)
-        df["text"] = df["subject"] + " " + df["message"]
-        df = df.drop(columns=["subject", "message"])
+        # df = df[
+        #     ~(
+        #         (df["class"] == "Social")
+        #         | (df["class"] == "Forums")
+        #         | (df["class"] == "Spam")
+        #         | (df["class"] == "Updates")
+        #     )
+        # ]
+        # df = df.reset_index(drop=True)
+        # df["text"] = df["subject"] + " " + df["message"]
+        # df = df.drop(columns=["subject", "message"])
 
-        print(df["class"].value_counts())
+        # print(df["class"].value_counts())
 
         # Remove last three features
-        # df = df.drop(columns = ['Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4'])
-        # logger.info("Removed the Unnecessary columns")
+        df = df.drop(columns = ['Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4'])
+        logger.info("Removed the Unnecessary columns")
 
         # Rename the columns
-        # df = df.rename({'v1': 'class', 'v2': 'text'}, axis = 1)
-        # logger.info("Renamed the columns")
+        df = df.rename({'v1': 'class', 'v2': 'text'}, axis = 1)
+        logger.info("Renamed the columns")
 
         # Encoding the classes
         le = LabelEncoder()
@@ -85,15 +85,15 @@ def main():
     logger.info("Starting the Data Ingestion  Pipeline")
     logger.info("=" * 50)
 
-    input_path = os.path.join("data", "raw", "real_emails.csv")
-    input_path2 = os.path.join("data", "raw", "real_emails2.csv")
+    input_path = os.path.join("data", "raw", "emails.csv")
+    # input_path2 = os.path.join("data", "raw", "real_emails2.csv")
     output_dir = os.path.join("data", "interim")
     output_path = os.path.join(output_dir, "data.csv")
 
     df = load_data(input_path)
-    df2 = load_data(input_path2)
+    # df2 = load_data(input_path2)
 
-    df = pd.concat([df, df2])
+    # df = pd.concat([df, df2])
 
     df = basic_cleaning(df)
     save(df, output_path)

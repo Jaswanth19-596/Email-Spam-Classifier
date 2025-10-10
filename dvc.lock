@@ -9,20 +9,20 @@ stages:
       size: 503663
     - path: email_spam_classification/data_ingestion.py
       hash: md5
-      md5: 3e5a6b02f3b1826638ef646fa9d8c020
-      size: 3065
+      md5: 536e04b4eff468cc975f0853a9288942
+      size: 3082
     outs:
     - path: data/interim/data.csv
       hash: md5
-      md5: ffdacfc197cf7b887ba8d86409f726a7
-      size: 6129450
+      md5: 47492060e3a553081d1044da9b82e05f
+      size: 79480
   data_cleaning_stage:
     cmd: python -m email_spam_classification.data_cleaning
     deps:
     - path: data/interim/data.csv
       hash: md5
-      md5: ffdacfc197cf7b887ba8d86409f726a7
-      size: 6129450
+      md5: 47492060e3a553081d1044da9b82e05f
+      size: 79480
     - path: email_spam_classification/data_cleaning.py
       hash: md5
       md5: 1d81cbe6876c387bead27ae7d3b4c57b
@@ -37,42 +37,42 @@ stages:
     outs:
     - path: data/interim/X_test.csv
       hash: md5
-      md5: 1794e1b1f6b342f29d9f4862300fac3b
-      size: 864370
+      md5: bf1911311dde1f8d2b27026103e2e33f
+      size: 9005
     - path: data/interim/X_train.csv
       hash: md5
-      md5: 903a80e2695fe21ea32f66d0f69bd7b3
-      size: 3895352
+      md5: c572fbb43d21ee82a037e583d08ba327
+      size: 39216
     - path: data/interim/y_test.csv
       hash: md5
-      md5: 5dab938957b762001aafcc5f4df64bbb
+      md5: c9b98d65a47672502de007fe94a05c72
       size: 406
     - path: data/interim/y_train.csv
       hash: md5
-      md5: b4956a4ec0cae0de1eb924f7aac6b966
+      md5: 8db0e2b048be7658ac61de3e041923b0
       size: 1606
     - path: models/text_cleaner.pkl
       hash: md5
-      md5: 8b5f46c59a44e6558d7fe12ca6451934
-      size: 24148274
+      md5: 4962d9584cdfffac0c56598a4b56f97f
+      size: 16400002
   feature_engineering_stage:
     cmd: python -m email_spam_classification.feature_engineering
     deps:
     - path: data/interim/X_test.csv
       hash: md5
-      md5: 1794e1b1f6b342f29d9f4862300fac3b
-      size: 864370
+      md5: bf1911311dde1f8d2b27026103e2e33f
+      size: 9005
     - path: data/interim/X_train.csv
       hash: md5
-      md5: 903a80e2695fe21ea32f66d0f69bd7b3
-      size: 3895352
+      md5: c572fbb43d21ee82a037e583d08ba327
+      size: 39216
     - path: data/interim/y_test.csv
       hash: md5
-      md5: 5dab938957b762001aafcc5f4df64bbb
+      md5: c9b98d65a47672502de007fe94a05c72
       size: 406
     - path: data/interim/y_train.csv
       hash: md5
-      md5: b4956a4ec0cae0de1eb924f7aac6b966
+      md5: 8db0e2b048be7658ac61de3e041923b0
       size: 1606
     - path: email_spam_classification/feature_engineering.py
       hash: md5
@@ -88,34 +88,34 @@ stages:
     outs:
     - path: data/processed/X_test.csv
       hash: md5
-      md5: 5e2cb3109c896c415d54f8bea1d7f4a6
-      size: 8406068
+      md5: cb2de3449fba51ddfa7087c68734b6d6
+      size: 6200997
     - path: data/processed/X_train.csv
       hash: md5
-      md5: f0822f9adc062438433f8ee09345b1da
-      size: 33425145
+      md5: bd5c9088137a1639e311c0583c9070c5
+      size: 24799577
     - path: data/processed/y_test.csv
       hash: md5
-      md5: 5dab938957b762001aafcc5f4df64bbb
+      md5: c9b98d65a47672502de007fe94a05c72
       size: 406
     - path: data/processed/y_train.csv
       hash: md5
-      md5: b4956a4ec0cae0de1eb924f7aac6b966
+      md5: 8db0e2b048be7658ac61de3e041923b0
       size: 1606
     - path: models/text_vectorizer.pkl
       hash: md5
-      md5: cf422b20fff6a907a30226879377115b
-      size: 442213
+      md5: efd1f24c59c76780cc5756e263617826
+      size: 303120
   model_building_stage:
     cmd: python -m email_spam_classification.model_building
     deps:
     - path: data/processed/X_train.csv
       hash: md5
-      md5: f0822f9adc062438433f8ee09345b1da
-      size: 33425145
+      md5: bd5c9088137a1639e311c0583c9070c5
+      size: 24799577
     - path: data/processed/y_train.csv
       hash: md5
-      md5: b4956a4ec0cae0de1eb924f7aac6b966
+      md5: 8db0e2b048be7658ac61de3e041923b0
       size: 1606
     - path: email_spam_classification/model_building.py
       hash: md5
@@ -132,18 +132,18 @@ stages:
     outs:
     - path: models/model.pkl
       hash: md5
-      md5: 491590245387723c91fe9479332dd505
-      size: 1799945
+      md5: d4f4f92a78e27f493b76b27118d9651e
+      size: 335243
   model_evaluation_stage:
     cmd: python -m email_spam_classification.model_evaluation
     deps:
     - path: data/processed/X_test.csv
       hash: md5
-      md5: 5e2cb3109c896c415d54f8bea1d7f4a6
-      size: 8406068
+      md5: cb2de3449fba51ddfa7087c68734b6d6
+      size: 6200997
     - path: data/processed/y_test.csv
       hash: md5
-      md5: 5dab938957b762001aafcc5f4df64bbb
+      md5: c9b98d65a47672502de007fe94a05c72
       size: 406
     - path: email_spam_classification/model_evaluation.py
       hash: md5
@@ -151,12 +151,12 @@ stages:
       size: 5348
     - path: models/model.pkl
       hash: md5
-      md5: 491590245387723c91fe9479332dd505
-      size: 1799945
+      md5: d4f4f92a78e27f493b76b27118d9651e
+      size: 335243
     outs:
     - path: metrics.json
       hash: md5
-      md5: e215b09dcfb1883e972040ee5bed9506
-      size: 94
+      md5: 49aaf01d5baf08ead01e9f69944332c8
+      size: 81
   stage_change:
     cmd: python email_spam_classification/model_stage_change.py
