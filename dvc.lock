@@ -9,13 +9,13 @@ stages:
       size: 503663
     - path: email_spam_classification/data_ingestion.py
       hash: md5
-      md5: 564b564c4bf0d2c4e4cf0f707d42e3a1
-      size: 3018
+      md5: 3e5a6b02f3b1826638ef646fa9d8c020
+      size: 3065
     outs:
     - path: data/interim/data.csv
       hash: md5
-      md5: eeb1de1f3ebb2efd5d35e32ff7b1a5f0
-      size: 6327705
+      md5: ffdacfc197cf7b887ba8d86409f726a7
+      size: 6129450
   data_cleaning_stage:
     cmd: python -m email_spam_classification.data_cleaning
     deps:

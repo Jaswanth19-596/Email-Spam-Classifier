@@ -33,6 +33,9 @@ jobs:
       - name: Formatting Check
         run: make format-check
 
+      - name: Pull Data from AWS
+        run:
+
       - name: Run the pipeline
         run: dvc repro
 
