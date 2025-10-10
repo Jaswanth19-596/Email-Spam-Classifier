@@ -50,10 +50,15 @@ class TestBasicFunctionality:
         text = ["Hello how are you"]
         cleaned_text = text_cleaner.fit_transform(pd.Series(text))
 
-        with open('params.yaml', 'r') as f:
-            params = yaml.safe_load(f) 
+        with open("params.yaml", "r") as f:
+            params = yaml.safe_load(f)
 
-        columns = [str(i) for i in range(params['feature_engineering']['TfIdfVectorizer']['max_features'])]
+        columns = [
+            str(i)
+            for i in range(
+                params["feature_engineering"]["TfIdfVectorizer"]["max_features"]
+            )
+        ]
         input_data = pd.DataFrame(
             vectorizer.transform(cleaned_text).toarray(), columns=columns
         )
