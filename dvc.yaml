@@ -3,7 +3,7 @@ stages:
     cmd: python -m email_spam_classification.data_ingestion
     deps:
       - email_spam_classification/data_ingestion.py
-      - data/emails.csv
+      - emails.csv
     outs:
       - data/raw/
   data_cleaning_stage:

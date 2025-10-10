@@ -85,7 +85,7 @@ def main():
     logger.info("Starting the Data Ingestion  Pipeline")
     logger.info("=" * 50)
 
-    input_path = os.path.join("data", "emails.csv")
+    input_path = os.path.join("emails.csv")
     # input_path2 = os.path.join("data", "raw", "real_emails2.csv")
     output_dir = os.path.join("data", "raw")
     output_path = os.path.join(output_dir, "data.csv")

@@ -3,27 +3,27 @@ stages:
   data_ingestion_stage:
     cmd: python -m email_spam_classification.data_ingestion
     deps:
-    - path: data/emails.csv
+    - path: email_spam_classification/data_ingestion.py
+      hash: md5
+      md5: 0adc460c59a13dbd6b89ed3d9aa21868
+      size: 3103
+    - path: emails.csv
       hash: md5
       md5: 008dcf9ca6aab621d3b3831db6815867
       size: 503663
-    - path: email_spam_classification/data_ingestion.py
-      hash: md5
-      md5: fbcae01260c67313ad77e4e91ab0ad68
-      size: 3111
     outs:
     - path: data/raw/
       hash: md5
-      md5: 627c1d3ae35f97076407f3e904366924.dir
-      size: 83470
+      md5: 0dcd8369e2de68bb1c6df50fbae22f03.dir
+      size: 83189
       nfiles: 1
   data_cleaning_stage:
     cmd: python -m email_spam_classification.data_cleaning
     deps:
     - path: data/raw/
       hash: md5
-      md5: 627c1d3ae35f97076407f3e904366924.dir
-      size: 83470
+      md5: 0dcd8369e2de68bb1c6df50fbae22f03.dir
+      size: 83189
       nfiles: 1
     - path: email_spam_classification/data_cleaning.py
       hash: md5
@@ -39,20 +39,20 @@ stages:
     outs:
     - path: data/interim/
       hash: md5
-      md5: 49234d6e82dff8888a15cc8eeaed9925.dir
-      size: 52948
+      md5: 15c5a2eaf0a429c502273aad7b38c6f1.dir
+      size: 52949
       nfiles: 4
     - path: models/text_cleaner.pkl
       hash: md5
-      md5: 3af3d245cedc750ec07a4791bcd535e0
-      size: 16404914
+      md5: 554fbea86cea791ed2e4722ca0e433b2
+      size: 16404690
   feature_engineering_stage:
     cmd: python -m email_spam_classification.feature_engineering
     deps:
     - path: data/interim/
       hash: md5
-      md5: 49234d6e82dff8888a15cc8eeaed9925.dir
-      size: 52948
+      md5: 15c5a2eaf0a429c502273aad7b38c6f1.dir
+      size: 52949
       nfiles: 4
     - path: email_spam_classification/feature_engineering.py
       hash: md5
@@ -68,20 +68,20 @@ stages:
     outs:
     - path: data/processed/
       hash: md5
-      md5: 612f6a42de076077a951f3da2557a9c7.dir
-      size: 35992428
+      md5: fc4eadce678348a840e21c9849188b5d.dir
+      size: 35702284
       nfiles: 4
     - path: models/text_vectorizer.pkl
       hash: md5
-      md5: 92a3ab20808abd813fc83ec9fb681b52
-      size: 351905
+      md5: 12002a9c867c74eeaf5791487f4d28e2
+      size: 349540
   model_building_stage:
     cmd: python -m email_spam_classification.model_building
     deps:
     - path: data/processed/
       hash: md5
-      md5: 612f6a42de076077a951f3da2557a9c7.dir
-      size: 35992428
+      md5: fc4eadce678348a840e21c9849188b5d.dir
+      size: 35702284
       nfiles: 4
     - path: email_spam_classification/model_building.py
       hash: md5
@@ -98,15 +98,15 @@ stages:
     outs:
     - path: models/model.pkl
       hash: md5
-      md5: f59587ff958c076b855997957fac368a
-      size: 362250
+      md5: 26d4cee3d20bd77ca5b908ab07ac11ee
+      size: 359171
   model_evaluation_stage:
     cmd: python -m email_spam_classification.model_evaluation
     deps:
     - path: data/processed/
       hash: md5
-      md5: 612f6a42de076077a951f3da2557a9c7.dir
-      size: 35992428
+      md5: fc4eadce678348a840e21c9849188b5d.dir
+      size: 35702284
       nfiles: 4
     - path: email_spam_classification/model_evaluation.py
       hash: md5
@@ -114,12 +114,12 @@ stages:
       size: 5348
     - path: models/model.pkl
       hash: md5
-      md5: f59587ff958c076b855997957fac368a
-      size: 362250
+      md5: 26d4cee3d20bd77ca5b908ab07ac11ee
+      size: 359171
     outs:
     - path: metrics.json
       hash: md5
-      md5: 23337be80ba6d79b862a6b5160dfc68f
-      size: 95
+      md5: 59a63a07821a79eb053831c651e618ca
+      size: 80
   stage_change:
     cmd: python email_spam_classification/model_stage_change.py
