@@ -1,0 +1,39 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  testing:
+    name: Testing
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: set up python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Security Check
+        run: make security-check
+
+      - name: Linting Check
+        run: make linting-check
+
+      - name: Formatting Check
+        run: make format-check
+
+      - name: Run the pipeline
+        run: dvc repro
+
+      - name: Run tests
+        run: pytest tests
