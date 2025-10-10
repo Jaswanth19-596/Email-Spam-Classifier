@@ -42,11 +42,11 @@ def basic_cleaning(df):
         # print(df["class"].value_counts())
 
         # Remove last three features
-        df = df.drop(columns = ['Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4'])
+        df = df.drop(columns=["Unnamed: 2", "Unnamed: 3", "Unnamed: 4"])
         logger.info("Removed the Unnecessary columns")
 
         # Rename the columns
-        df = df.rename({'v1': 'class', 'v2': 'text'}, axis = 1)
+        df = df.rename({"v1": "class", "v2": "text"}, axis=1)
         logger.info("Renamed the columns")
 
         # Encoding the classes
