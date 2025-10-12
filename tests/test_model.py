@@ -13,7 +13,7 @@ import yaml
 load_dotenv()
 
 os.environ["DATABRICKS_HOST"] = os.getenv("DATABRICKS_HOST")
-os.environ["DATABRICKS_TOKEN"] = os.getenv("DATABRICKS_ACCESS_TOKEN")
+os.environ["DATABRICKS_TOKEN"] = os.getenv("DATABRICKS_TOKEN")
 
 mlflow.set_tracking_uri("databricks")
 mlflow.set_experiment("/Users/madhajaswanth@gmail.com/TempExperiment")
