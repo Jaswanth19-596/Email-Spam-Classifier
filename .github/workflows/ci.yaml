@@ -13,7 +13,7 @@ jobs:
 
     env:
       DATABRICKS_HOST: ${{secrets.DATABRICKS_HOST}}
-      DATABRICKS_TOKEN: ${{secrets.DATABRICKS_ACCESS_TOKEN}}
+      DATABRICKS_TOKEN: ${{secrets.DATABRICKS_TOKEN}}
 
     steps:
       - name: Checkout cod
