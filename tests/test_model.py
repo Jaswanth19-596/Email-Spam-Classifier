@@ -15,12 +15,10 @@ load_dotenv()
 host = os.getenv("DATABRICKS_HOST")
 token = os.getenv("DATABRICKS_TOKEN")
 
-print(host)
-print(token)
 
 
 os.environ["DATABRICKS_HOST"] = host
-# os.environ["DATABRICKS_TOKEN"] = token
+os.environ["DATABRICKS_TOKEN"] = token
 
 mlflow.set_tracking_uri("databricks")
 mlflow.set_experiment("/Users/madhajaswanth@gmail.com/TempExperiment")
