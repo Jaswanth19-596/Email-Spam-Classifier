@@ -31,8 +31,8 @@ stages:
       size: 2603
     - path: utils/text_cleaner.py
       hash: md5
-      md5: fc0b15e7bdfc41ee511cc97403c4f369
-      size: 1692
+      md5: b97b6a1981e8cbae80da2e746ecca747
+      size: 1721
     params:
       params.yaml:
         data_cleaning.test_size: 0.1
@@ -44,7 +44,7 @@ stages:
       nfiles: 4
     - path: models/text_cleaner.pkl
       hash: md5
-      md5: 554fbea86cea791ed2e4722ca0e433b2
+      md5: b8155deecfbf34a80bb62167e7e2abc9
       size: 16404690
   feature_engineering_stage:
     cmd: python -m email_spam_classification.feature_engineering

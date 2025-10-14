@@ -45,7 +45,7 @@ jobs:
           aws-region: us-east-2
 
       - name: Pull Data from AWS
-        run: dvc pull
+        run: dvc pull emails.csv
 
       - name: Run the pipeline
         run: dvc repro
