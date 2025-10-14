@@ -16,7 +16,6 @@ host = os.getenv("DATABRICKS_HOST")
 token = os.getenv("DATABRICKS_TOKEN")
 
 
-
 os.environ["DATABRICKS_HOST"] = host
 os.environ["DATABRICKS_TOKEN"] = token
 
