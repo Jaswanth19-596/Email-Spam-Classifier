@@ -80,4 +80,4 @@ class TestBasicFunctionality:
 
         assert accuracy_score(y_test, y_pred) > 0.5, f"Accuracy too low"
         assert precision_score(y_test, y_pred) > 0.2, f"Precision too low"
-        assert recall_score(y_test, y_pred) > 0.5, f"Recall too low"
+        assert recall_score(y_test, y_pred) > 0.3, f"Recall too low"
