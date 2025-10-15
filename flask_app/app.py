@@ -91,4 +91,4 @@ if __name__ == "__main__":
     print("Model ready!")
 
     # Run the Flask app
-    app.run(debug=False, host="0.0.0.0")
+    app.run(debug=False)
