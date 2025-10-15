@@ -6,6 +6,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from nltk.corpus import stopwords
 import pandas as pd
 
+nltk.download("stopwords")
 
 class TextCleaner(BaseEstimator, TransformerMixin):
 
