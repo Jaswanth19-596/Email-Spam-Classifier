@@ -16,7 +16,7 @@ jobs:
       DATABRICKS_TOKEN: ${{secrets.DATABRICKS_TOKEN}}
 
     steps:
-      - name: Checkout cod
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: set up python
@@ -70,7 +70,9 @@ jobs:
           key: ${{secrets.EC2_SSH_KEY}}
           script: |
             sudo docker pull jaswanth38/emailclassification
-            sudo docker stop jaswanth38/emailclassification || true
-            sudo docker rm jaswanth38/emailclassification || true
-            docker run -p 80:5000 -e DATABRICKS_HOST=${{secrets.DATABRICKS_HOST}} \
-              -e DATABRICKS_TOKEN=${{secrets.DATABRICKS_TOKEN}} jaswanth38/emailclassification
+            sudo docker stop emailclassification || true
+            sudo docker rm emailclassification || true
+            sudo docker run -d --name emailclassification -p 80:5000 \
+              -e DATABRICKS_HOST=${{secrets.DATABRICKS_HOST}} \
+              -e DATABRICKS_TOKEN=${{secrets.DATABRICKS_TOKEN}} \
+              jaswanth38/emailclassification
