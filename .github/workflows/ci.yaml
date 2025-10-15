@@ -61,3 +61,16 @@ jobs:
 
       - name: Push the Image
         run: docker push jaswanth38/emailclassification
+
+      - name: SSH to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.EC2_HOST}}
+          username: ${{secrets.EC2_USER}}
+          key: ${{secrets.EC2_SSH_KEY}}
+          script: |
+            sudo docker pull jaswanth38/emailclassification
+            sudo docker stop jaswanth38/emailclassification || true
+            sudo docker rm jaswanth38/emailclassification || true
+            docker run -p 80:5000 -e DATABRICKS_HOST=${{secrets.DATABRICKS_HOST}} \
+              -e DATABRICKS_TOKEN=${{secrets.DATABRICKS_TOKEN}} jaswanth38/emailclassification
