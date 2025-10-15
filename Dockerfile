@@ -1,5 +1,9 @@
-FROM python:3.7-slim
+FROM python:3.10-slim
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc build-essential \
+    && rm -rf /var/lib/apt/lists/*
+    
 WORKDIR /app
 
 COPY /flask_app /app/flask_app/
@@ -8,7 +12,7 @@ COPY models/text_vectorizer.pkl /app/models/text_vectorizer.pkl
 
 COPY utils/ /app/utils/
 
-RUN pip install -r flask_app/requirements.txt
+RUN pip install -r flask_app/requirements-app.txt
 
 RUN python -m nltk.downloader stopwords && python -m spacy download en_core_web_sm
 

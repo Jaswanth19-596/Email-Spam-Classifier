@@ -54,7 +54,7 @@ jobs:
         run: pytest tests
 
       - name: Build the docker image
-        run: docker build -t jaswanth38/emailclassification
+        run: docker build -t jaswanth38/emailclassification .
 
       - name: Login to docker
         run: docker login -u="${{secrets.DOCKER_USERNAME}}" -p="${{secrets.DOCKER_PASSWORD}}"
