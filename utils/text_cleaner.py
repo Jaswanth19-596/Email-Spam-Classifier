@@ -8,6 +8,7 @@ import pandas as pd
 
 nltk.download("stopwords")
 
+
 class TextCleaner(BaseEstimator, TransformerMixin):
 
     def __init__(self):
