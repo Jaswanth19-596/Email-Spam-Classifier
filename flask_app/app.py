@@ -6,7 +6,6 @@ Integrated with MLflow for model management
 from flask import Flask, render_template, request, jsonify
 import mlflow
 import mlflow.pyfunc
-import numpy as np
 import joblib
 from utils.text_cleaner import TextCleaner
 import os
@@ -39,7 +38,6 @@ def load_model():
     model = mlflow.pyfunc.load_model(
         "models:/development.models.spam_classifier@staging"
     )
-    print(model)
 
 
 @app.route("/")
@@ -71,7 +69,6 @@ def predict():
         # Make prediction
         prediction = model.predict(email_vectorized_df)[0]
 
-        print(f"prediction {prediction}")
         # Prepare response
         result = {
             "prediction": "Spam" if prediction == 1 else "Not Spam (Ham)",
@@ -94,4 +91,4 @@ if __name__ == "__main__":
     print("Model ready!")
 
     # Run the Flask app
-    app.run(debug=False, host="localhost", port=5001)
+    app.run(debug=False, host="0.0.0.0")
